@@ -50,24 +50,24 @@ A **full-stack web application** that allows multiple users to collaborate in re
 ```bash
 git clone https://github.com/Ridhima-Sapra/code-editor.git
 cd code-editor
-Install dependencies:
+2. Install dependencies:
 
 bash
 Copy code
 npm install
-cd client  # if React app is in a subfolder
+cd realtime-code-editor-main
 npm install
-Build React app:
+3. Build React app:
 
 bash
 Copy code
 npm run build
-Start the server:
+4. Start the server:
 
 bash
 Copy code
 npm start
-Open your browser at http://localhost:5000.
+5. Open your browser at http://localhost:5000.
 
 Usage
 Enter a room ID and your username to join a session.
