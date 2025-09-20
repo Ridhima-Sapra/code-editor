@@ -3,6 +3,8 @@ import toast from 'react-hot-toast';
 import ACTIONS from '../Actions';
 import Client from '../components/Client';
 import Editor from '../components/Editor';
+import CollaborativeBoard from "../components/CollaborativeBoard";
+
 import { initSocket } from '../socket';
 import {
     useLocation,
@@ -18,6 +20,7 @@ const EditorPage = () => {
     const { roomId } = useParams();
     const reactNavigator = useNavigate();
     const [clients, setClients] = useState([]);
+    const [activeTab, setActiveTab] = useState("editor"); // new state for tabs
 
     useEffect(() => {
         const init = async () => {
@@ -92,44 +95,151 @@ const EditorPage = () => {
     }
 
     return (
-        <div className="mainWrap">
-            <div className="aside">
-                <div className="asideInner">
-                    <div className="logo">
-                        <img
-                            className="logoImage"
-                            src="/code-sync.png"
-                            alt="logo"
-                        />
-                    </div>
-                    <h3>Connected</h3>
-                    <div className="clientsList">
-                        {clients.map((client) => (
-                            <Client
-                                key={client.socketId}
-                                username={client.username}
-                            />
-                        ))}
-                    </div>
-                </div>
-                <button className="btn copyBtn" onClick={copyRoomId}>
-                    Copy ROOM ID
-                </button>
-                <button className="btn leaveBtn" onClick={leaveRoom}>
-                    Leave
-                </button>
-            </div>
-            <div className="editorWrap">
-                <Editor
-                    socketRef={socketRef}
-                    roomId={roomId}
-                    onCodeChange={(code) => {
-                        codeRef.current = code;
-                    }}
-                />
-            </div>
+  <div className="mainWrap">
+    {/* Sidebar */}
+    <div className="aside">
+      <div className="asideInner">
+        <div className="logo">
+          <img className="logoImage" src="/code-sync.png" alt="logo" />
         </div>
-    );
+
+        <h3>Connected</h3>
+        <div className="clientsList">
+          {clients.map((client) => (
+            <Client key={client.socketId} username={client.username} />
+          ))}
+        </div>
+
+        {/* Tabs moved INSIDE sidebar */}
+        <div className="tabs">
+          <button
+            onClick={() => setActiveTab("editor")}
+            className={activeTab === "editor" ? "activeTab" : ""}
+          >
+            Code Editor
+          </button>
+          <button
+            onClick={() => setActiveTab("whiteboard")}
+            className={activeTab === "whiteboard" ? "activeTab" : ""}
+          >
+            Whiteboard
+          </button>
+        </div>
+      </div>
+
+      {/* Bottom actions */}
+      <div>
+        <button className="btn copyBtn" onClick={copyRoomId}>
+          Copy ROOM ID
+        </button>
+        <button className="btn leaveBtn" onClick={leaveRoom}>
+          Leave
+        </button>
+      </div>
+    </div>
+
+    {/* Right Panel */}
+    <div className="editorWrap">
+      {activeTab === "editor" && (
+        <Editor
+          socketRef={socketRef}
+          roomId={roomId}
+          onCodeChange={(code) => {
+            codeRef.current = code;
+          }}
+        />
+      )}
+      {activeTab === "whiteboard" && (
+        <CollaborativeBoard socket={socketRef.current} roomId={roomId} />
+      )}
+    </div>
+  </div>
+);
+
 };
 
 export default EditorPage;
+// import React, { useState, useEffect, useRef } from "react";
+// import Client from "../components/Client";
+// import Editor from "../components/Editor";
+// import CollaborativeBoard from "../components/CollaborativeBoard";
+// import { useNavigate, useParams } from "react-router-dom";
+// import { toast } from "react-hot-toast";
+
+// import "../App.css"; // make sure CSS below is imported
+
+// const EditorPage = ({ socketRef, clients, roomId, onCodeChange }) => {
+//   const navigate = useNavigate();
+//   const { roomId: urlRoomId } = useParams();
+//   const [activeTab, setActiveTab] = useState("editor"); // default Code Editor
+
+//   const copyRoomId = async () => {
+//     try {
+//       await navigator.clipboard.writeText(urlRoomId);
+//       toast.success("Room ID copied!");
+//     } catch (err) {
+//       toast.error("Failed to copy Room ID");
+//     }
+//   };
+
+//   const leaveRoom = () => {
+//     navigate("/");
+//   };
+
+//   return (
+//     <div className="mainWrap">
+//       {/* Sidebar */}
+//       <aside className="aside">
+//         <div className="asideInner">
+//           <h3 className="connectedTitle">Connected</h3>
+//           <div className="clientsList">
+//             {clients.map((client) => (
+//               <Client key={client.socketId} username={client.username} />
+//             ))}
+//           </div>
+
+//           {/* Tabs for Editor / Whiteboard */}
+//           <div className="tabButtons">
+//             <button
+//               className={`tabBtn ${activeTab === "editor" ? "activeTab" : ""}`}
+//               onClick={() => setActiveTab("editor")}
+//             >
+//               Code Editor
+//             </button>
+//             <button
+//               className={`tabBtn ${activeTab === "whiteboard" ? "activeTab" : ""}`}
+//               onClick={() => setActiveTab("whiteboard")}
+//             >
+//               Whiteboard
+//             </button>
+//           </div>
+//         </div>
+
+//         {/* Bottom buttons */}
+//         <div className="asideBottom">
+//           <button className="btn copyBtn" onClick={copyRoomId}>
+//             Copy ROOM ID
+//           </button>
+//           <button className="btn leaveBtn" onClick={leaveRoom}>
+//             Leave
+//           </button>
+//         </div>
+//       </aside>
+
+//       {/* Main content area */}
+//       <div className="editorWrap">
+//         {activeTab === "editor" ? (
+//           <Editor
+//             socketRef={socketRef}
+//             roomId={urlRoomId}
+//             onCodeChange={onCodeChange}
+//           />
+//         ) : (
+//           <CollaborativeBoard socket={socketRef.current} roomId={urlRoomId} />
+//         )}
+//       </div>
+//     </div>
+//   );
+// };
+
+// export default EditorPage;

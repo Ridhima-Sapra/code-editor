@@ -8,6 +8,8 @@ const ACTIONS = require('./src/Actions');
 const server = http.createServer(app);
 const io = new Server(server);
 
+const canvasMap = {};
+
 app.use(express.static('build'));
 app.use((req, res, next) => {
     res.sendFile(path.join(__dirname, 'build', 'index.html'));
@@ -49,7 +51,21 @@ io.on('connection', (socket) => {
     socket.on(ACTIONS.SYNC_CODE, ({ socketId, code }) => {
         io.to(socketId).emit(ACTIONS.CODE_CHANGE, { code });
     });
+//whiteboard
+    socket.on("join-doc", (docId) => {
+        socket.join(docId);
+        // Send last canvas if exists
+        if (canvasMap[docId]) {
+            socket.emit("load-doc", canvasMap[docId]);
+        }
+    });
 
+    socket.on("edit-doc", ({ content, docId }) => {
+        canvasMap[docId] = content; // save latest canvas in memory
+        socket.to(docId).emit("update-doc", content);
+    });
+
+    
     socket.on('disconnecting', () => {
         const rooms = [...socket.rooms];
         rooms.forEach((roomId) => {
