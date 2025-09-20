@@ -1,64 +1,114 @@
-📘 Collaborative Code Editor
+# Real-Time Code Editor with Collaborative Whiteboard
 
-A real-time collaborative code editor where multiple users can write, edit, and share code together.
-Built using Node.js + Express + Socket.IO + CodeMirror, and deployed on Render.
+A **full-stack web application** that allows multiple users to collaborate in real-time on coding projects while also sharing a **whiteboard for visual collaboration**. Built with **React**, **Node.js**, **Express**, and **Socket.IO**, this project demonstrates real-time synchronization of code and drawing sessions in shared rooms.
 
-🚀 Features
+---
 
-Real-time Collaboration (multiple users editing the same file simultaneously)
+## Features
 
-Code Editor (CodeMirror) with syntax highlighting
+- **Real-time Code Editor**
+  - Multiple users can edit the same code simultaneously.
+  - Changes are broadcasted live to all participants in the room.
+  - Code synchronization ensures that new users receive the latest code on joining.
 
-WebSockets (Socket.IO) for live updates
+- **Collaborative Whiteboard**
+  - Draw, sketch, and annotate in real-time.
+  - Each room has its own persistent whiteboard state stored in memory.
+  - Updates are broadcasted to all connected users instantly.
 
-Multi-user Support (edits broadcasted instantly to all connected clients)
+- **Rooms**
+  - Users join a room by `roomId`.
+  - Both code editor and whiteboard sync within the same room.
+  - Users see connected participants in real-time.
 
-Deployed on Render for scalability & easy access
+- **Frontend**
+  - Built with **React**.
+  - Responsive UI compatible with desktop screens.
+  - CSS styling for a clean and user-friendly interface.
 
-🛠 Tech Stack
+- **Backend**
+  - Built with **Node.js** and **Express**.
+  - Serves React build and handles **Socket.IO** connections.
+  - In-memory storage for whiteboard data (`canvasMap`).
+  - Tracks connected users per room.
 
-Frontend: HTML, CSS, JavaScript, CodeMirror
+---
 
-Backend: Node.js + Express
+## Tech Stack
 
-Real-time: Socket.IO (WebSockets)
+- **Frontend:** React, CSS  
+- **Backend:** Node.js, Express, Socket.IO  
+- **Real-time Communication:** Socket.IO  
+- **Deployment:** Render  
 
-Deployment: Render
+---
 
-⚙️ Installation
+## Installation / Running Locally
 
-Clone the repo & install dependencies:
+1. Clone the repository:
 
-git clone <your-repo-url>
-cd collaborative-editor
+```bash
+git clone https://github.com/Ridhima-Sapra/code-editor.git
+cd code-editor
+Install dependencies:
+
+bash
+Copy code
 npm install
+cd client  # if React app is in a subfolder
+npm install
+Build React app:
 
+bash
+Copy code
+npm run build
+Start the server:
 
-Run locally:
-
+bash
+Copy code
 npm start
+Open your browser at http://localhost:5000.
 
+Usage
+Enter a room ID and your username to join a session.
 
-App will be available at:
+Collaborate on the code editor:
 
-http://localhost:3000
+Changes appear in real-time to all participants.
 
-📌 Usage
+Use the whiteboard for drawing or annotations:
 
-Open the app in browser
+Whiteboard content is synced across all users in the room.
 
-Share the link with others
+Participants joining later will receive the latest code and whiteboard state.
 
-Start coding together in real time 🚀
+Project Structure
+bash
+Copy code
+/server.js          - Main backend server
+/src                - React frontend source code
+/src/components     - Reusable components (Editor, CollaborativeBoard, etc.)
+/build              - Production React build
+/package.json       - Project dependencies and scripts
+Deployment
+Hosted on Render.
 
-🔮 Future Improvements
+Simply pushing updates to GitHub triggers an automatic rebuild and deployment.
 
-Add multiple file support
+Server serves React build on the same port as Socket.IO, making deployment simple and conflict-free.
 
-Add authentication (private rooms)
+Notes
+Currently, whiteboard state is stored in memory (canvasMap). Restarting the server will reset it.
 
-Support multiple programming languages
+Socket.IO handles both code editor and whiteboard events in the same room.
 
-Live preview for frontend projects
+Some React warnings about useEffect dependencies exist; these do not affect functionality.
 
-Save code to database (MongoDB/Postgres)
+Future Improvements
+Persist whiteboard data to a database (e.g., MongoDB) to prevent loss on server restart.
+
+Add authentication for secure rooms.
+
+Add multiple language support for the code editor.
+
+Improve UI/UX for mobile devices.
